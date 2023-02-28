@@ -201,7 +201,12 @@ def custDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def vendorDashboard(request):
-    return render(request, 'accounts/vendorDashboard.html')
+    vendor = Vendor.objects.get(user=request.user)
+    context = {
+        'vendor': vendor,
+    }
+    return render(request, 'accounts/vendorDashboard.html', context=context)
+
 
 def forgot_password(request):
     if request.method == 'POST':
@@ -220,6 +225,7 @@ def forgot_password(request):
             messages.error(request, 'Account with this email address does not exist.')
             return redirect('forgot_password')
     return render(request, 'accounts/forgot_password.html')
+
 
 def reset_password_validate(request, uidb64, token):
     # validate the user by decoding the token and user pk
