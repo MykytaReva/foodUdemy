@@ -7,6 +7,11 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.conf import settings
 
+
+from django.shortcuts import get_list_or_404
+# from menu.models import Category, FoodItem
+
+
 def detectUser(user):
     if user.role == 1:
         redirectUrl = 'vendorDashboard'
