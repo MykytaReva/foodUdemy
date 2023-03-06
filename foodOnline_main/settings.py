@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'accounts',
     'vendor',
     'menu',
+    'marketplace',
 ]
 
 MIDDLEWARE = [
@@ -111,7 +112,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR /'static'
 STATICFILES_DIRS = [
-    'foodOnline_main/static',
+    'foodOnline_main/static'
 ]
 
 

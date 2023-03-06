@@ -68,8 +68,9 @@ function onPlaceChanged (){
 }
 
 
-$(document).ready(function () {
-    $('.add_to_cart').click(function () {
-        alert("This is an alert message!");
-    });
+$(document).ready(function(){
+    $('.add_to_cart').on('click', function(e){
+        e.preventFefault();
+        alert('test123');
+    })
 });
