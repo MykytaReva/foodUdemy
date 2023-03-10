@@ -2,7 +2,15 @@ from django.shortcuts import render, get_object_or_404
 from vendor.models import Vendor
 from menu.models import Category, FoodItem
 from django.db.models import Prefetch
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from .models import Cart
+from .context_processors import get_cart_counter, get_cart_amount
+from django.contrib.auth.decorators import login_required
+
+
+# is_ajax has been deprecated
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
 def marketplace(request):
@@ -23,13 +31,117 @@ def vendor_detail(request, vendor_slug=None):
             queryset = FoodItem.objects.filter(is_available=True)
         )
     )
-
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user)
+    else:
+        cart_items = None
     context = {
         'vendor': vendor,
         'categories': categories,
+        'cart_items': cart_items,
     }
     return render(request, 'marketplace/vendor_detail.html', context)
 
 
 def add_to_cart(request, food_slug):
-    return HttpResponse('Testing')
+    if request.user.is_authenticated:
+        if is_ajax(request=request):
+            # Check if the food item exists
+            try:
+                fooditem = FoodItem.objects.get(slug=food_slug)
+                # Check if the user has already added that food to the cart
+                try:
+                    chkCart = Cart.objects.get(user=request.user, fooditem=fooditem)
+                    # Increase the cart quantity
+                    chkCart.quantity += 1
+                    chkCart.save()
+                    return JsonResponse({
+                        'status': 'Success',
+                        'message': 'Increased the cart quantity',
+                        'cart_counter':get_cart_counter(request),
+                        'qty':chkCart.quantity,
+                        'cart_amount': get_cart_amount(request),
+                        })
+                except:
+                    chkCart = Cart.objects.create(user=request.user, fooditem=fooditem, quantity=1)
+                    return JsonResponse({
+                        'status': 'Success',
+                        'message': 'Added the food to the cart',
+                        'cart_counter':get_cart_counter(request),
+                        'qty':chkCart.quantity,
+                        'cart_amount': get_cart_amount(request),
+                        })
+            except:
+                return JsonResponse({'status':'Failed', 'message': 'This food does not exist!'})
+        else:
+            return JsonResponse({'status': 'Failed', 'message': 'Invalid request!'})
+
+    else:
+        return JsonResponse({'status': 'login_required', 'message': 'Please login to continue'})
+
+
+def decrease_cart(request, food_slug):
+    if request.user.is_authenticated:
+        if is_ajax(request=request):
+            # Check if the food item exists
+            try:
+                fooditem = FoodItem.objects.get(slug=food_slug)
+                # Check if the user has already added that food to the cart
+                try:
+                    chkCart = Cart.objects.get(user=request.user, fooditem=fooditem)
+                    if chkCart.quantity > 1:
+                        # decrease the cart quantity
+                        chkCart.quantity -= 1
+                        chkCart.save()
+                    else:
+                        chkCart.delete()
+                        chkCart.quantity = 0
+                    return JsonResponse({
+                        'status': 'Success',
+                        'cart_counter':get_cart_counter(request),
+                        'qty':chkCart.quantity,
+                        'cart_amount': get_cart_amount(request),
+                        })
+                except:
+                    return JsonResponse({
+                        'status': 'Failed',
+                        'message': 'You do not have this item in your cart!',
+                        'qty':chkCart.quantity,
+                        'cart_amount': get_cart_amount(request),
+                        })
+            except:
+                return JsonResponse({'status':'Failed', 'message': 'This food does not exist!'})
+        else:
+            return JsonResponse({'status': 'Failed', 'message': 'Invalid request!'})
+
+    else:
+        return JsonResponse({'status': 'login_required', 'message': 'Please login to continue'})
+
+@login_required(login_url='login')
+def cart(request):
+    cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
+    context = {
+        'cart_items': cart_items,
+    }
+    return render(request, 'marketplace/cart.html', context)
+
+
+def delete_cart(request, food_slug):
+    if request.user.is_authenticated:
+        if is_ajax(request=request):
+            try:
+                #check if the cart item exists
+                cart_item = Cart.objects.get(user=request.user, fooditem__slug=food_slug)
+                if cart_item:
+                    cart_item.delete()
+                    return JsonResponse({
+                        'status': 'Success',
+                        'message': 'Cart item has been deleted!',
+                        'cart_counter': get_cart_counter(request),
+                        'cart_amount': get_cart_amount(request),
+                    })
+            except:
+                return JsonResponse({'status': 'Failed', 'message': 'Cart Item does not exist!'})
+        else:
+            return JsonResponse({'status': 'Failed', 'message': 'Invalid request!'})
+

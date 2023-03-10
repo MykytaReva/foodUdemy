@@ -51,6 +51,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'accounts.context_processors.get_vendor',
                 'accounts.context_processors.get_google_api_key',
+                'marketplace.context_processors.get_cart_counter',
+                'marketplace.context_processors.get_cart_amount',
             ],
         },
     },
@@ -110,9 +112,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR /'static'
+# STATIC_ROOT = BASE_DIR /'static'
 STATICFILES_DIRS = [
-    'foodOnline_main/static'
+    'foodOnline_main/static/'
 ]
 
 
