@@ -38,9 +38,15 @@
                                                 <h5>
                                                     <a href="{% url 'vendor_detail' vendor.vendor_slug%}">{{ vendor }}</a>
                                                 </h5>
-                                                {% if vendor.user_profile.city and vendor.user_profile.state and vendor.user_profile.country %}
-										            <span>{{vendor.user_profile.city}}, {{vendor.user_profile.state}}, {{vendor.user_profile.country}}</span>
+                                                {% if vendor.user_profile.address %}
+										            <span>{{vendor.user_profile.address}}</span>
 										        {% endif %}
+
+                                                <br>
+                                                {% if source_location %}
+                                                <span><small>{{vendor.kms}}km away from {{source_location}}</small></span>
+                                                {% endif %}
+
                                             </div>
 
 

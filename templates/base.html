@@ -7,7 +7,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>FoodOnline</title>
-	
+
 	<!-- Google Font Family Link Start -->
 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800">
@@ -28,9 +28,9 @@
 	<script src="{% static 'js/bootstrap.js' %}"></script>
 
 	<link rel="stylesheet" href="{% static 'css/custom.css' %}">
-	{% if '/profile/' in request.GET %}
-	<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
-	{% endif %}
+	{% comment %} {% if '/profile/' in request.path %} {% endcomment %}
+	<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" defer></script>
+	{% comment %} {% endif %} {% endcomment %}
 	<script src="{% static 'js/custom.js' %}"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<style>
