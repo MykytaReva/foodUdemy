@@ -8,29 +8,40 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 
+def get_or_set_current_location(request):
+    if 'lat' in request.session:
+        lat = request.session['lat']
+        lng = request.session['lng']
+        return lng, lat
+    elif 'lat' in request.GET:
+        lat = request.GET.get('lat')
+        lng = request.GET.get('lng')
+        request.session['lat'] = lat
+        request.session['lng'] = lng
+        return lng, lat
+    else:
+        return None
+
 
 def home(request):
-    if 'lat' in request.GET:
-        lat = reqeust.GET.get('lat')
-        lng = reqeust.GET.get('lng')
+    if get_or_set_current_location(request) is not None:
+
         radius = 100
 
-        pnt = GEOSGeometry('POINT(%s %s)' % (lng, lat))
+        pnt = GEOSGeometry('POINT(%s %s)' % (get_or_set_current_location(request)))
 
         vendors = Vendor.objects.filter(
-            Q(id__in=fetch_vendors_by_fooditems) |
-            Q(vendor_name__icontains=keyword, is_approved=True, user__is_active=True),
-            user_profile__location__distance_lte=(pnt, D(km=radius))
-        ).annotate(distance=Distance("user_profile__location", pnt)).order_by('distance')
-
+            user_profile__location__distance_lte=(pnt, D(km=radius))).annotate(distance=Distance("user_profile__location", pnt)
+        ).order_by("distance")
         for v in vendors:
             v.kms = round(v.distance.km, 1)
 
     else:
         vendors = Vendor.objects.filter(is_approved=True, user__is_active=True)[:8]
-    categories = Category.objects.all()
+
+    # categories = Category.objects.all()
     context = {
         'vendors': vendors,
-        'categories': categories,
+        # 'categories': categories,
     }
     return render(request, 'home.html', context)

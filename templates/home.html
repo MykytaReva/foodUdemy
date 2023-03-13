@@ -146,13 +146,10 @@
 										{% if vendor.user_profile.city and vendor.user_profile.state and vendor.user_profile.country %}
 										<span>{{vendor.user_profile.city}}, {{vendor.user_profile.state}}, {{vendor.user_profile.country}}</span>
 										{% endif %}
-										<address> <span>Type of food :</span></address>
-
-										{% for category in categories %}
-											{% if  category.vendor == vendor %}
-												<span>{{category.category_name}},</span>
-											{% endif %}
-										{% endfor %}
+										{% if vendor.kms %}
+											<br>
+											<span><small><b>{{vendor.kms}} km </b>away</small></span>
+										{% endif %}
 
 									</div>
 
