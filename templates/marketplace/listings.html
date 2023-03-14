@@ -30,7 +30,12 @@
                                             <figure>
                                                 <a href="{% url 'vendor_detail' vendor.vendor_slug%}"><img src="{% if vendor.user_profile.profile_picture %}{{ vendor.user_profile.profile_picture.url }}{% else %}{% static 'logo/anonymous.png' %}{% endif %}" class="img-list wp-post-image" alt=""></a>
                                             </figure>
+                                            {% if vendor.is_open%}
+                                            <span class="restaurant-status open"><em class="bookmarkRibbon"></em>Open</span>
+                                            {% else %}
                                             <span class="restaurant-status close"><em class="bookmarkRibbon"></em>Close</span>
+
+                                            {% endif %}
                                         </div>
                                         <div class="text-holder">
 

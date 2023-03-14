@@ -1,18 +1,26 @@
-from django.shortcuts import render, get_object_or_404
-from vendor.models import Vendor
-from menu.models import Category, FoodItem
 from django.db.models import Prefetch
+
 from django.http import HttpResponse, JsonResponse
-from .models import Cart
-from .context_processors import get_cart_counter, get_cart_amount
-from django.contrib.auth.decorators import login_required
+
 from django.db.models import Q
+
+from django.contrib.auth.decorators import login_required
 
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 
 from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404
+
+from vendor.models import Vendor, OpeningHour
+from menu.models import Category, FoodItem
+
+from .models import Cart
+from .context_processors import get_cart_counter, get_cart_amount
+
+from datetime import date, datetime
+
 
 
 # is_ajax has been deprecated
@@ -38,6 +46,28 @@ def vendor_detail(request, vendor_slug=None):
             queryset = FoodItem.objects.filter(is_available=True)
         )
     )
+
+    opening_hours = OpeningHour.objects.filter(vendor=vendor).order_by('day', '-from_hour')
+
+    # check current day's opening hours
+    today_date = date.today()
+    today = today_date.isoweekday()
+    # print(today)
+    current_opening_hours = OpeningHour.objects.filter(vendor=vendor, day=today)
+
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+
+    is_open = None
+    for i in current_opening_hours:
+        start = str(datetime.strptime(i.from_hour, "%I:%M %p").time())
+        end = str(datetime.strptime(i.to_hour, "%I:%M %p").time())
+        if current_time > start and current_time < end:
+            is_open = True
+            break
+        else:
+            is_open = False
+
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
     else:
@@ -46,6 +76,9 @@ def vendor_detail(request, vendor_slug=None):
         'vendor': vendor,
         'categories': categories,
         'cart_items': cart_items,
+        'opening_hours': opening_hours,
+        'current_opening_hours': current_opening_hours,
+        'is_open': is_open,
     }
     return render(request, 'marketplace/vendor_detail.html', context)
 
