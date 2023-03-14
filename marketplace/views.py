@@ -49,24 +49,12 @@ def vendor_detail(request, vendor_slug=None):
 
     opening_hours = OpeningHour.objects.filter(vendor=vendor).order_by('day', '-from_hour')
 
-    # check current day's opening hours
+
+     # Check current day's opening hours.
     today_date = date.today()
     today = today_date.isoweekday()
-    # print(today)
+
     current_opening_hours = OpeningHour.objects.filter(vendor=vendor, day=today)
-
-    now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
-
-    is_open = None
-    for i in current_opening_hours:
-        start = str(datetime.strptime(i.from_hour, "%I:%M %p").time())
-        end = str(datetime.strptime(i.to_hour, "%I:%M %p").time())
-        if current_time > start and current_time < end:
-            is_open = True
-            break
-        else:
-            is_open = False
 
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
@@ -78,7 +66,7 @@ def vendor_detail(request, vendor_slug=None):
         'cart_items': cart_items,
         'opening_hours': opening_hours,
         'current_opening_hours': current_opening_hours,
-        'is_open': is_open,
+
     }
     return render(request, 'marketplace/vendor_detail.html', context)
 
@@ -220,3 +208,5 @@ def search(request):
             'source_location': address,
         }
         return render(request, 'marketplace/listings.html', context)
+
+
