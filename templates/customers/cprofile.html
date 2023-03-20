@@ -17,6 +17,14 @@
                         <div class="user-holder">
                             <h5 class="text-uppercase">Profile settings</h5>
 
+                            {% comment %} <div class="item-thumb">
+                                <input type="file" name="profile_pic" accept='image/' id='imgInp'>
+                                <img style="height: 30%; width: 30%;" id="blah" src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% else %}{% static 'logo/anonymous.png' %}{% endif %}" alt="">
+                            </div>
+                            <br>
+                            <hr> {% endcomment %}
+
+
                             <form action="{% url  'cprofile' %}" method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="form-fields-set">
@@ -30,7 +38,9 @@
                                                                 <li class="gal-img">
                                                                     <div class="drag-list">
                                                                         <div class="item-thumb">
-                                                                            <img class="thumbnail" src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% else %}{% static 'logo/anonymous.png' %}{% endif %}" alt="">
+                                                                            {% comment %} <img style="height: 40%; width: 40%;" id="blah" src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% else %}{% static 'logo/anonymous.png' %}{% endif %}" alt=""> {% endcomment %}
+
+                                                                            <img id="blah" class="thumbnail" src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% else %}{% static 'logo/anonymous.png' %}{% endif %}" alt="">
                                                                         </div>
                                                                     </div>
                                                                 </li>
@@ -38,7 +48,10 @@
                                                         </div>
                                                         <div class="text-holder">
                                                             <label>Update Logo</label>
-                                                            <div class="upload-gallery">
+                                                            <div class="upload-gallery" id='imgInp.files'>
+                                                                {% comment %} <input id='prof_pict' type="file" name="profile_pic" accept='image/' id='imgInp'> {% endcomment %}
+
+                                                                {% comment %} <input type="file" name="profile_picture" class="btn btn-info" id="id_profile_picture"> {% endcomment %}
                                                                 {{profile_form.profile_picture}}
                                                             </div>
                                                         </div>
@@ -52,7 +65,7 @@
                                                                 <li class="gal-img">
                                                                     <div class="drag-list">
                                                                         <div class="item-thumb">
-                                                                            <img class="thumbnail" src="{% if profile.cover_photo %}{{ profile.cover_photo.url }}{% else %}{% static 'extra-images/cover-photo01.jpg' %}{% endif %}" alt="">
+                                                                            <img id="blah1" class="thumbnail" src="{% if profile.cover_photo %}{{ profile.cover_photo.url }}{% else %}{% static 'extra-images/cover-photo01.jpg' %}{% endif %}" alt="">
                                                                         </div>
                                                                     </div>
                                                                 </li>
@@ -89,7 +102,6 @@
                                                     <div class="field-holder">
                                                         <label>Address *</label>
                                                         {{profile_form.address}}
-                                                        {% comment %} <input id="autocomplete" type="text"/> {% endcomment %}
                                                         <small class="text-muded float-right">powered by Goodle</small>
                                                     </div>
                                                 </div>
@@ -129,8 +141,6 @@
                                                         {{profile_form.longtitude}}
                                                     </div>
                                                 </div>
-
-
                                             </div>
                                         </li>
                                     </ul>
@@ -142,9 +152,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-
-                        </div>
                     </div>
                 </div>
             </div>
@@ -152,5 +159,21 @@
     </div>
 </div>
 <!-- Main Section End -->
+<script>
 
+    id_profile_picture.onchange = evt => {
+  const [file] = id_profile_picture.files
+  if (file) {
+    blah.src = URL.createObjectURL(file)
+  }
+}
+
+id_cover_photo.onchange = evt => {
+    const [file] = id_cover_photo.files
+    if (file) {
+      blah1.src = URL.createObjectURL(file)
+    }
+  }
+
+</script>
 {% endblock content %}

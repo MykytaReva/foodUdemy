@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'menu',
     'marketplace',
     'customers',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,8 @@ TEMPLATES = [
                 'accounts.context_processors.get_vendor',
                 'accounts.context_processors.get_user_profile',
                 'accounts.context_processors.get_google_api_key',
-                
+                'accounts.context_processors.get_paypal_client_id',
+
                 'marketplace.context_processors.get_cart_counter',
                 'marketplace.context_processors.get_cart_amount',
             ],
@@ -156,7 +158,10 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 
-
+PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 # os.environ['PATH'] = os.path.join(BASE_DIR, 'env\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
 # os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'env\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
 # GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'env\lib\python3.10\site-packages\osgeo\libgdal.so')
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+# SECURE_CROSS_ORIGIN_OPENER_POLICY = None

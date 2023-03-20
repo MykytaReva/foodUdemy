@@ -1,0 +1,11 @@
+{% autoescape off %}
+
+
+<div><b>Hi, {{user.first_name}}!</b></div>
+
+<div>Thank you for your order.</div>
+<div>Your order number: {{order.order_number}}</div>
+<div>Transaction ID: {{order.payment.transaction_id}}</div>
+<div>Total costs: $ {{order.total}}</div>
+
+{% endautoescape %}

@@ -12,9 +12,13 @@ from accounts.models import UserProfile
 def cprofile(request):
     profile = get_object_or_404(UserProfile, user=request.user)
     if request.method == 'POST':
+        print(request.POST)
+        print(request.POST.get('profile_pic'))
+
         profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
         user_form = UserInfoForm(request.POST, instance=request.user)
         if profile_form.is_valid() and user_form.is_valid():
+            profile_form.profile_picture = request.POST.get('profile_pic')
             profile_form.save()
             user_form.save()
             messages.success(request, 'Profile Updated')
@@ -22,7 +26,7 @@ def cprofile(request):
         else:
             print(profile_form.errors)
             print(user_form.errors)
-            
+
     else:
         profile_form = UserProfileForm(instance=profile)
         user_form = UserInfoForm(instance=request.user)
@@ -32,3 +36,5 @@ def cprofile(request):
         'profile': profile,
     }
     return render(request, 'customers/cprofile.html', context)
+
+
