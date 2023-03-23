@@ -85,9 +85,9 @@
 								<figure>
 
 									{% if vendor.user_profile.profile_picture %}
-									<a href="{% url 'vendor_detail' vendor.vendor_slug %}"><img src="{{ vendor.user_profile.profile_picture.url }}" class="attachment-full size-full wp-post-image" alt=""></a>
+									<a href="{% url 'vendor_detail' vendor.vendor_slug %}"><img height='125' src="{{ vendor.user_profile.profile_picture.url }}" class="attachment-full size-full wp-post-image" alt=""></a>
 									{% else %}
-									<a href="#"><img src="{% static 'logo/anonymous.png' %}" class="attachment-full size-full wp-post-image" alt=""></a>
+									<a href="#"><img height='125' src="{% static 'logo/anonymous.png' %}" class="attachment-full size-full wp-post-image" alt=""></a>
 									{% endif %}
 								</figure>
 							</li>
