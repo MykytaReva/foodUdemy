@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 from marketplace.views import cart, search, checkout
 
 urlpatterns = [
+    # docs
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('', include('accounts.urls')),
@@ -23,6 +25,8 @@ urlpatterns = [
 
     # ORDERS
     path('orders/', include('orders.urls')),
+
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

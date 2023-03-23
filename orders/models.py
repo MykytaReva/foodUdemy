@@ -3,6 +3,10 @@ from django.db import models
 from accounts.models import User
 from menu.models import FoodItem
 from vendor.models import Vendor
+import simplejson as json
+
+request_object = ''
+
 
 class Payment(models.Model):
     PAYMENT_METHOD = (
@@ -54,6 +58,43 @@ class Order(models.Model):
     @property
     def name(self):
         return f'{self.first_name} {self.last_name}'
+
+    def order_placed_to(self):
+        return ", ".join([str(i) for i in self.vendors.all()])
+
+
+    def get_total_by_vendor(self):
+        vendor = Vendor.objects.get(user=request_object.user)
+        subtotal = 0
+        tax = 0
+        tax_dict = {}
+        if self.total_data:
+            total_data = json.loads(self.total_data)
+
+            data = total_data.get(str(vendor.id))
+            # print(data)
+
+            # {'23.00': {'CGST': {'9.00': '2.07'}, 'SGST': {'7.00': '1.61'}}}
+
+            for key, val in data.items():
+                subtotal += float(key)
+                val = val.replace("'", '"')
+                val = json.loads(val)
+                tax_dict.update(val)
+
+                # calculate tax
+                for i in val:
+                    for j in val[i].values():
+                        tax += float(j)
+
+        total = float(subtotal) + float(tax)
+        context = {
+            'subtotal': subtotal,
+            'tax_dict': tax_dict,
+            'total': total,
+        }
+        return context
+
 
     def __str__(self):
         return self.order_number

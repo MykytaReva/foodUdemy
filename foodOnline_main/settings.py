@@ -22,6 +22,9 @@ INSTALLED_APPS = [
 
     'django.contrib.gis',
 
+    # docs
+    'django.contrib.admindocs',
+
     #apps
     'accounts',
     'vendor',
@@ -39,6 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'orders.request_object.RequestObjectMiddleware', # custom middle ware for request object
 ]
 
 ROOT_URLCONF = 'foodOnline_main.urls'
