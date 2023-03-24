@@ -1,8 +1,9 @@
 asgiref==3.6.0
 Django==4.1.7
-GDAL==3.4.3
+docutils==0.19
 Pillow==9.4.0
-psycopg2==2.9.5
+psycopg2-binary
 python-decouple==3.7
 simplejson==3.18.4
 sqlparse==0.4.3
+gunicorn

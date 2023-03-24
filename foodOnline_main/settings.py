@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '194.233.161.191', 'nsrevas.bio', 'www.nsrevas.bio']
 
 
 INSTALLED_APPS = [
@@ -126,7 +126,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = BASE_DIR /'static'
+STATIC_ROOT = BASE_DIR /'static'
 STATICFILES_DIRS = [
     'foodOnline_main/static/'
 ]
